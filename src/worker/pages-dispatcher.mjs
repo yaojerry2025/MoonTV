@@ -75,8 +75,8 @@ async function rewriteEdgetunnelResponse(response) {
   // `/admin` requests. Keep them inside the isolated edgetunnel namespace so
   // MoonTV's identically named routes are never reached after the first page.
   const body = (await response.text())
-    .replace(/(["'])\/admin(?=\/|\1)/g, '$1/e_admin')
-    .replace(/(["'])\/login(?=\/|\1)/g, '$1/e_login');
+    .replace(/(["'`])\/admin(?=\/|\1)/g, '$1/e_admin')
+    .replace(/(["'`])\/login(?=\/|\1)/g, '$1/e_login');
   return new Response(body, { status: response.status, statusText: response.statusText, headers });
 }
 
