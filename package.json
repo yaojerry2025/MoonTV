@@ -18,7 +18,10 @@
     "gen:runtime": "node scripts/generate-runtime.js",
     "restore:sw": "node scripts/restore-sw.js",
     "prepare": "husky install",
-    "pages:build": "npx @cloudflare/next-on-pages"
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:build:integrated": "node scripts/compose-pages-worker.mjs",
+    "worker:build": "node scripts/compose-pages-worker.mjs",
+    "deploy:worker": "pnpm run worker:build && npx --yes wrangler@4.140.0 deploy"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

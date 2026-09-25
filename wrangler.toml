@@ -1,0 +1,22 @@
+name = "tvtoolstest"
+main = ".worker/index.js"
+compatibility_date = "2026-09-25"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+NEXT_PUBLIC_STORAGE_TYPE = "d1"
+USERNAME = "admin"
+
+[assets]
+directory = ".vercel/output/static"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "5aca034deb734bec90fe5c4b07e2a156"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tvtoolstest-moontv"
+database_id = "848d3d01-74d1-49f7-a5c5-c8a6bfa381f1"

@@ -1,8 +1,16 @@
 /** @type {import('next').NextConfig} */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+const isCloudflarePages =
+  process.env.CF_PAGES === '1' ||
+  process.env.CLOUDFLARE_PAGES === '1' ||
+  process.argv.includes('pages:build');
+
 const nextConfig = {
-  output: 'standalone',
+  // Pages builds are converted from Vercel Build Output by next-on-pages. The
+  // standalone server output is unnecessary there and requires Windows symlink
+  // privileges during local builds; retain it for Docker and other deployments.
+  output: isCloudflarePages ? undefined : 'standalone',
   eslint: {
     dirs: ['src'],
     ignoreDuringBuilds: true,
@@ -71,11 +79,6 @@ if (process.env.NODE_ENV === 'development') {
   const { setupDevPlatform } = require('@cloudflare/next-on-pages/next-dev');
   setupDevPlatform();
 }
-
-// 检测是否为云平台构建
-const isCloudflarePages = process.env.CF_PAGES === '1' || 
-  process.env.CLOUDFLARE_PAGES === '1' ||
-  process.argv.includes('pages:build');
 
 const isVercel = process.env.VERCEL === '1';
 const isNetlify = process.env.NETLIFY === 'true';
