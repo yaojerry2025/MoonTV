@@ -3,6 +3,14 @@ main = ".worker/index.js"
 compatibility_date = "2026-09-25"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
+no_bundle = true
+find_additional_modules = true
+base_dir = ".worker"
+preserve_file_names = true
+
+[[rules]]
+type = "ESModule"
+globs = ["**/*.js"]
 
 [vars]
 NEXT_PUBLIC_STORAGE_TYPE = "d1"

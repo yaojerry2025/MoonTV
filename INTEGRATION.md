@@ -36,8 +36,11 @@ npx wrangler dev
 
 `worker:build` sets `CF_PAGES=1`, runs the ordinary MoonTV
 next-on-pages build, then uses the custom entrypoint to create the final
-`.vercel/output/static/_worker.js`. On Windows, run the build from WSL or use
-Developer Mode because Vercel Build Output uses symbolic links. The deploy
+`.vercel/output/static/_worker.js` and copies the complete module directory to
+the ignored `.worker/` deployment directory. Wrangler deploys those modules
+with preserved filenames, while `.assetsignore` prevents the server modules
+from being published as static assets. On Windows, run the build from WSL or
+use Developer Mode because Vercel Build Output uses symbolic links. The deploy
 target is Cloudflare Workers with static assets, not Vercel or Pages.
 
 ## Cloudflare configuration and deployment

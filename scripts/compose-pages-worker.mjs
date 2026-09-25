@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { copyFile, mkdir, writeFile } from 'node:fs/promises';
+import { cp, rm, writeFile } from 'node:fs/promises';
 
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const env = { ...process.env, CF_PAGES: '1', NEXT_PUBLIC_STORAGE_TYPE: 'd1' };
@@ -23,6 +23,6 @@ await run([
 // Wrangler must not publish the generated server worker as a static asset.
 // Keep the executable in its own ignored build directory and explicitly
 // exclude the source `_worker.js` directory from the static asset upload.
-await mkdir('.worker', { recursive: true });
-await copyFile('.vercel/output/static/_worker.js/index.js', '.worker/index.js');
+await rm('.worker', { recursive: true, force: true });
+await cp('.vercel/output/static/_worker.js', '.worker', { recursive: true });
 await writeFile('.vercel/output/static/.assetsignore', '_worker.js\n');
