@@ -66,6 +66,11 @@ pnpm run deploy:worker
 passwords, tokens, or UUIDs. Enable gRPC in the Cloudflare zone where the
 Worker route is attached before using XHTTP/gRPC.
 
+The current production custom domain is `https://tvtoolstest.yaogame.com`.
+It is attached to `tvtoolstest` through the Workers custom-domain control and
+gRPC is enabled in the `yaogame.com` Network settings. Keep that zone setting
+enabled when redeploying or changing the custom domain.
+
 ## Updating and rollback
 
 For MoonTV, fetch `upstream/main`, review it, merge it into `integrated-pages`,
