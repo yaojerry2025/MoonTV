@@ -37,6 +37,7 @@ yarn-error.log*
 
 # generated Cloudflare Worker executable
 .worker
+.wrangler
 
 # typescript
 *.tsbuildinfo
