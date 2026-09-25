@@ -59,18 +59,25 @@ function asRequest(request, url) {
   return new Request(url.toString(), request);
 }
 
-function rewriteEdgetunnelLocation(response) {
-  const location = response.headers.get('Location');
-  if (!location) return response;
-
-  let replacement = location;
-  if (location === '/login') replacement = '/e_login';
-  else if (location === '/admin' || location.startsWith('/admin/')) replacement = `/e_${location.slice(1)}`;
-  if (replacement === location) return response;
-
+async function rewriteEdgetunnelResponse(response) {
+  const originalLocation = response.headers.get('Location');
+  const location = originalLocation ?? '';
+  const contentType = response.headers.get('content-type') ?? '';
   const headers = new Headers(response.headers);
-  headers.set('Location', replacement);
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  if (location === '/login') headers.set('Location', '/e_login');
+  else if (location === '/admin' || location.startsWith('/admin/')) headers.set('Location', `/e_${location.slice(1)}`);
+
+  if (!contentType.includes('text/html')) {
+    return originalLocation === headers.get('Location') ? response : new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  }
+
+  // The upstream static login/admin pages use root-absolute `/login` and
+  // `/admin` requests. Keep them inside the isolated edgetunnel namespace so
+  // MoonTV's identically named routes are never reached after the first page.
+  const body = (await response.text())
+    .replace(/(["'])\/admin(?=\/|\1)/g, '$1/e_admin')
+    .replace(/(["'])\/login(?=\/|\1)/g, '$1/e_login');
+  return new Response(body, { status: response.status, statusText: response.statusText, headers });
 }
 
 async function fetchEdgetunnel(request, env, ctx) {
@@ -87,7 +94,7 @@ export default {
 
     if (url.pathname === '/e_login' || url.pathname === '/e_admin' || url.pathname.startsWith('/e_admin/')) {
       url.pathname = url.pathname === '/e_login' ? '/login' : `/admin${url.pathname.slice('/e_admin'.length)}`;
-      return rewriteEdgetunnelLocation(await fetchEdgetunnel(asRequest(request, url), env, ctx));
+      return rewriteEdgetunnelResponse(await fetchEdgetunnel(asRequest(request, url), env, ctx));
     }
 
     if (url.pathname === '/version') {
